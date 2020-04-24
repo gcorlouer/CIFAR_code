@@ -17,7 +17,7 @@
 % ROI2chans{k}(i)  - i-th channel in k-th SUMA ROI
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-BP = 0;
+BP = 0; subject = 'AnRa';
 sm = get_SUMA_map(subject);
 
 [fname, fpath, dataset] = CIFAR_filename('BP', false);
@@ -107,10 +107,10 @@ for i = 1:length(s)
     cm.chansbyROI = horzcat(cm.ROI2chans{:}); % concatenate!y = cell2mat(cm.ROI2
 
     EEG.SUMA = cm;
-    dataset2save = dataset;
+    dataset2save = [dataset, 'ROI_info'];
     fpath2save = fpath;
     pop_saveset(EEG, 'filename', dataset2save, 'filepath', fpath2save, ...
-    'savemode', 'resave')
+    'savemode', 'onefile')
 
     %	EEG = rmfield(EEG,{'data','times'}); % don't need these in here
     % 	fname = fullfile(fpath,[dataset '.mat']);

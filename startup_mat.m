@@ -7,54 +7,31 @@ CIFAR_version.minor = 0;
 rootdir = getenv('USERPROFILE');
 %fprintf('[CIFAR startup] Initialising CIFAR version %d.%d\n', PsyMEG_version.major, PsyMEG_version.minor);
 
-% Add CIFAR root dir + appropriate subdirs to path
-
-cd .. % parent folder
-global CIFAR_root;
-CIFAR_root = pwd; % path containing this file
-addpath(CIFAR_root);
-
 % Home dir
 
-global home_dir
-cd .. % parent folder of CIFAR directory
-home_dir = pwd ;
-cd(CIFAR_root)
+global home_dir CIFAR_root code_root% parent folder of CIFAR directory
+home_dir = fullfile('~');
+CIFAR_root = fullfile(home_dir, 'projects', 'CIFAR') ; 
+addpath(genpath(CIFAR_root));
 
-% Add appropriate path for matlab ECoG analysis
-
-global code_matlab_root ;
-code_matlab_root = fileparts(mfilename('fullpath')); % path containing this file
-addpath(genpath(fullfile(code_matlab_root)));
-
-% addpath(genpath(fullfile(code_matlab_root,'utils')));
-% addpath(genpath(fullfile(code_matlab_root,'analysis'))); % was genpath before
-% addpath(fullfile(code_matlab_root,'tests'));
-% addpath(fullfile(code_matlab_root,'preproc'));
 fprintf('[CIFAR startup] Added path %s and appropriate subpaths\n',CIFAR_root);
 
 % Initialize mvgc library
 
 global mvgc_root;
-mvgc_root = fullfile(home_dir,'toolbox','mvgc');
+mvgc_root = fullfile(home_dir,'toolboxes','mvgc');
 assert(exist(mvgc_root,'dir') == 7,'bad MVGC path: ''%s'' does not exist or is not a directory',mvgc_root);
 cd(mvgc_root);
 startup;
 cd(CIFAR_root);
-
-% Add simulated data
-
-global sim_dir
-sim_dir = fullfile(CIFAR_root, 'simulated_data');
-addpath(genpath(fullfile(sim_dir)));
 
 % Add other useful toolboxes
 
 global toolbox_dir ESN_dir noisetool eeglab_root
 
 cd(home_dir)
-toolbox_dir = fullfile(home_dir,'toolbox');
-ESN_dir = fullfile(toolbox_dir,'EchoState-GrangerCausality');
+toolbox_dir = fullfile(home_dir,'toolboxes');
+%ESN_dir = fullfile(toolbox_dir,'EchoState-GrangerCausality');
 noisetool = fullfile(toolbox_dir,'NoiseTools');
 eeglab_root = fullfile(toolbox_dir,'eeglab');
 addpath(genpath(fullfile(ESN_dir)));
@@ -66,9 +43,9 @@ cd(CIFAR_root)
 
 % Path to plot figures
 
-global fig_path_root
-fig_path_root = fullfile(CIFAR_root, 'figures');
-addpath(genpath(fig_path_root));
+% global fig_path_root
+% fig_path_root = fullfile(CIFAR_root, 'figures');
+% addpath(genpath(fig_path_root));
 
 % Initialize EEGLab
 
@@ -89,7 +66,7 @@ addpath(genpath(fig_path_root));
 % Amend for your CIFAR data set-up
 
 global cfdatadir cffigdir cfsubdir cfmetadata
-cfdatadir  = fullfile(CIFAR_root,'CIFAR_data');
+cfdatadir  = fullfile(CIFAR_root,'data');
 cffigdir   = fullfile(cfdatadir,'iEEG_10','figures');
 cfsubdir   = fullfile(cfdatadir,'iEEG_10','subjects');
 cfmetadata = fullfile(cfdatadir,'metadata','metadata.mat');
@@ -98,17 +75,17 @@ addpath(fullfile(genpath(cfdatadir)))
 % Electrode mapping
 
 global ecog_map_root fsaverage_dir plot_elecdir;
-ecog_map_root = fullfile(code_matlab_root,'utils','electrode_mapping');
+ecog_map_root = fullfile(code_root,'utils','electrode_mapping');
 plot_elecdir  = fullfile(ecog_map_root,'plot_electrodes_on_brain','plot_brain');
 fsaverage_dir = fullfile(ecog_map_root, 'fsaverage'); %average brain path
 addpath(genpath(ecog_map_root));
 
 % Image viewers
 
-global rasviewer pdfviewer svgviewer
-rasviewer = 'feh';
-pdfviewer = 'mupdf';
-svgviewer = 'inkview';
+% global rasviewer pdfviewer svgviewer
+% rasviewer = 'feh';
+% pdfviewer = 'mupdf';
+% svgviewer = 'inkview';
 
 % Get screen size
 

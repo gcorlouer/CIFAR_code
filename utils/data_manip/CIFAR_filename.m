@@ -5,7 +5,7 @@
 % preproc: preproc or noprproc data
 % task : 'rest_baseline_1', 'rest_baseline_1','sleep', 'stimuli_1', 'stimuli_2';
 %% 
-function [fname, fpath, dataset] = CIFAR_filename_test(varargin)
+function [fname, fpath, dataset] = CIFAR_filename(varargin)
 
 defaultBP = true;
 defaultSubject = 'AnRa';
@@ -32,13 +32,13 @@ parse(p, varargin{:});
 global cfsubdir
 
 if p.Results.BP
-    preprocDir = ppDir('preproc', p.Results.preproc, 'pforder', ... 
-        p.Results.pforder, 'thresh', p.Results.thresh, 'basis', p.Results.basis);
-     ddir = fullfile('bipolar_montage', preprocDir);
+%     preprocDir = ppDir('preproc', p.Results.preproc, 'pforder', ... 
+%         p.Results.pforder, 'thresh', p.Results.thresh, 'basis', p.Results.basis);
+     ddir = fullfile('bipolar_montage');
 else
-    preprocDir = ppDir('preproc', p.Results.preproc, 'pforder', ...
-        p.Results.pforder, 'thresh', p.Results.thresh, 'basis', p.Results.basis);
-    ddir = fullfile('raw_signal', preprocDir);
+%     preprocDir = ppDir('preproc', p.Results.preproc, 'pforder', ...
+%         p.Results.pforder, 'thresh', p.Results.thresh, 'basis', p.Results.basis);
+    ddir = fullfile('raw_signal');
 end
 
 fpath = fullfile(cfsubdir,p.Results.subject,'EEGLAB_datasets',ddir);
