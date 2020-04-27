@@ -33,7 +33,7 @@ cd(home_dir)
 toolbox_dir = fullfile(home_dir,'toolboxes');
 %ESN_dir = fullfile(toolbox_dir,'EchoState-GrangerCausality');
 noisetool = fullfile(toolbox_dir,'NoiseTools');
-eeglab_root = fullfile(toolbox_dir,'eeglab');
+eeglab_root = fullfile(toolbox_dir,'eeglab2019_1');
 addpath(genpath(fullfile(ESN_dir)));
 addpath(genpath(fullfile(noisetool)));
 rmpath(fullfile(noisetool, 'COMPAT'));
