@@ -21,7 +21,7 @@ pd.options.display.max_rows = None
 Path.cwd()
 %matplotlib auto
 homedir = os.path.expanduser('~')
-subjectdir = os.path.join(homedir, 'projects', 'CIFAR', 'data', 'iEEG_10', 'subjects')
+subjectdir = os.path.join(homedir, 'projects', 'CIFAR', 'source_data', 'iEEG_10', 'subjects')
 sub_id = "AnRa"
 task = "freerecall_rest_baseline"
 run = "1"
@@ -59,11 +59,13 @@ raw_test.plot(duration=200, n_channels=30, scalings=5e-4, color='b')
 
 # %% Get SUMA mapping
 
+sub_id = "AnRa"
 anatpath = os.path.join(subjectdir, sub_id, 'brain')
 elecfile = 'elecinfo.mat'
 elecpath = os.path.join(anatpath, elecfile)
 elec = loadmat(elecpath)
 elec.keys()
+elec['electrode_name']
 elec['ROI_DK'] = elec['ROI_DK'].T
 euclid = ['X', 'Y', 'Z']
 bad_keys = ['__header__', '__version__', '__globals__', 'coord']
@@ -78,7 +80,7 @@ for item in elec.keys():
     elec[item] = np.concatenate(elec[item])
     for i in range(elec[item].size):
         elec[item][i] = elec[item][i][0]
-
+elec
 # Convert to dataframe
 
 dfelec = pd.DataFrame.from_dict(elec)

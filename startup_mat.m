@@ -66,7 +66,7 @@ cd(CIFAR_root)
 % Amend for your CIFAR data set-up
 
 global cfdatadir cffigdir cfsubdir cfmetadata
-cfdatadir  = fullfile(CIFAR_root,'data');
+cfdatadir  = fullfile(CIFAR_root,'source_data');
 cffigdir   = fullfile(cfdatadir,'iEEG_10','figures');
 cfsubdir   = fullfile(cfdatadir,'iEEG_10','subjects');
 cfmetadata = fullfile(cfdatadir,'metadata','metadata.mat');
