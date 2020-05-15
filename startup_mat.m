@@ -19,7 +19,7 @@ fprintf('[CIFAR startup] Added path %s and appropriate subpaths\n',CIFAR_root);
 % Initialize mvgc library
 
 global mvgc_root;
-mvgc_root = fullfile(home_dir,'toolboxes','mvgc');
+mvgc_root = fullfile(home_dir,'toolboxes','mvgc_v2.0');
 assert(exist(mvgc_root,'dir') == 7,'bad MVGC path: ''%s'' does not exist or is not a directory',mvgc_root);
 cd(mvgc_root);
 startup;
@@ -27,13 +27,16 @@ cd(CIFAR_root);
 
 % Add other useful toolboxes
 
-global toolbox_dir ESN_dir noisetool eeglab_root
+global toolbox_dir ESN_dir noisetool eeglab_root LPZ_dir
 
 cd(home_dir)
 toolbox_dir = fullfile(home_dir,'toolboxes');
 %ESN_dir = fullfile(toolbox_dir,'EchoState-GrangerCausality');
 noisetool = fullfile(toolbox_dir,'NoiseTools');
 eeglab_root = fullfile(toolbox_dir,'eeglab2019_1');
+LPZ_dir = fullfile(toolbox_dir, 'fLZc');
+
+addpath(genpath(fullfile(LPZ_dir)));
 addpath(genpath(fullfile(ESN_dir)));
 addpath(genpath(fullfile(noisetool)));
 rmpath(fullfile(noisetool, 'COMPAT'));
@@ -54,14 +57,14 @@ cd(CIFAR_root)
 % addpath(eeglab_root);
 % addpath(genpath(fullfile(eeglab_root,'functions')));
 
-% Add Fieldtrip
+%Add Fieldtrip
 
-% global fieldtrip_root
-% cd(home_dir)
-% fieldtrip_root = fullfile(home_dir,'fieldtrip');
-% addpath(fieldtrip_root)
-% ft_defaults % add main fieldtrip functions
-% cd(CIFAR_root)
+global fieldtrip_root
+cd(home_dir)
+fieldtrip_root = fullfile(home_dir,'toolboxes','fieldtrip');
+addpath(fieldtrip_root)
+ft_defaults % add main fieldtrip functions
+cd(CIFAR_root)
 
 % Amend for your CIFAR data set-up
 

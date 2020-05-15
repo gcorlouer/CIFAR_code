@@ -49,7 +49,7 @@ if ~exist('inter','var') inter = false; end % Inter or intra relation for dFC an
 %% Import preprocessed data and pick chans/ROIs
 
 
-[fname, fpath, dataset] = CIFAR_filename('preproc', true); 
+[fname, fpath, dataset] = CIFAR_filename('preproc', false); 
 
 EEG = pop_loadset(fname, fpath);
 

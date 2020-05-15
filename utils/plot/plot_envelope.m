@@ -18,5 +18,5 @@ title('Envelope extraction')
 xt = get(gca, 'XTick');                                 
 set(gca, 'XTick', xt, 'XTickLabel', xt/fs)  
 xlabel('Time (sec)')
-ylabel('Potential (mV)')
+ylabel('Potential (V)')
 legend('Signal','Envelope')
