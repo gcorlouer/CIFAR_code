@@ -25,9 +25,9 @@ if ~exist('Band','var') Band = [fcut1 fcut2]; end
 
 % Epoching 
 
-if ~exist('trange','var') trange = [10 50]; end % Time series range
-if ~exist('wsize','var') wsize = [0 5]; end % Epoch size
-if ~exist('wstep','var') wstep = 0.1; end % Step between epochs
+if ~exist('trange','var') trange = [10 80]; end % Time series range
+if ~exist('wsize','var') wsize = [0 10]; end % Epoch size
+if ~exist('wstep','var') wstep = 5; end % Step between epochs
 if ~exist('multitrial','var') multitrial = true; end
 
 % ROI select for dFC
@@ -35,29 +35,16 @@ if ~exist('multitrial','var') multitrial = true; end
 if ~exist('nROI','var') nROI = 2; end % Number of ROI to pick for analysis
 if ~exist('inter','var') inter = false; end % Inter or intra relation for dFC analysis
 
-%% Import preprocessed data and pick chans/ROIs
+%% Import data
 
-datapath = fullfile('~','projects','CIFAR','data_bids', ... 
-    'derivatives', 'sub-00', 'sub-00_task-rest_run-01_proc-outlrmv_ieeg.mat');
-
-data = load(datapath);
-
-X = data.data_outlrmv;
-fs = 500;
-
-%% Load EEG 
-%trange = [10 50];
-
-[fname, fpath, dataset] = CIFAR_filename('preproc', false); 
-
+[fname, fpath, dataset] = CIFAR_filename('preproc', false, ...
+    'subject','JuRo'); 
+datapath = fullfile('~','projects','CIFAR','data_fun', ... 
+    'JuRo_freerecall_rest_baseline_1_preprocessed_BP_montage_pick.mat');
+dataset = load(datapath);
 EEG = pop_loadset(fname, fpath);
-
-% Select time window 
-
-EEG.data = X;
-
-%EEG = pop_select(EEG, 'time', trange);
-
+X = double(dataset.data);
+EEG.data = X ;
 
 %% Envelope extraction
 
@@ -79,8 +66,8 @@ fvtool(bpFilt, 'Fs', fs, ...
 % Extract envelope from hilbert transform on filtered data
 [envelope, tsdata_filt] = tsdata2env(X, bpFilt);
 
-trange = 1000:5000; chanum= 3;
-plot_envelope(tsdata_filt,envelope,trange, chanum, fs)
+srange = 1000:5000; chanum= 3;
+plot_envelope(tsdata_filt,envelope,srange, chanum, fs)
 
 % Assign in new EEG structure
 EEG_envelope = EEG;
@@ -89,6 +76,7 @@ EEG_envelope.data = envelope;
 EEG_filt = EEG;
 EEG_filt.data = tsdata_filt;
 
+close all
 %title: 60-80 Hz envelope
 
 % %% Plot envelope and filter on same 
@@ -100,11 +88,7 @@ EEG_filt.data = tsdata_filt;
 
 %% Pick chans and envelope
 
-trange = [10 40];
-
-X = X(1:20, :);
-envelope = envelope(1:20, :);
-tsdata_filt = tsdata_filt(1:20, :);
+% trange = [10 40];
 
 EEG_envelope = EEG;
 EEG_envelope.data = envelope;
@@ -112,24 +96,20 @@ EEG_envelope.data = envelope;
 EEG_filt = EEG;
 EEG_filt.data = tsdata_filt;
 
-EEG.data = X;
-
 EEG_filt = pop_select(EEG_filt, 'time', trange);
 EEG_envelope = pop_select(EEG_envelope, 'time', trange);
 EEG = pop_select(EEG, 'time', trange);
 
 %% Epoching 
-wsize = [0 2];
-wstep = 0.5;
 
 outEEG_env = eeg_regepochs(EEG_envelope, 'recurrence', wstep, 'limits', wsize); % Epoch envelope
 epochEEG_filt = eeg_regepochs(EEG_filt, 'recurrence', wstep, 'limits', wsize); % Epoch filtered data
 epochEEG = eeg_regepochs(EEG, 'recurrence', wstep, 'limits', wsize); % Epoch initial data
 
 % Extract epoched time series
-epochedEnvelope = outEEG_env.data; 
-epochedTsdata_filt = epochEEG_filt.data;
-epochX = epochEEG.data;
+epochedEnvelope = double(outEEG_env.data); 
+epochedTsdata_filt = double(epochEEG_filt.data);
+epochX =double(epochEEG.data);
 
 %% Save epoch data
 
@@ -226,4 +206,4 @@ Fint = bandlimit(f,3);
 
 %% Plot GC 
 
-plot_gc({F,Fint},{'PWCGC (envelope)','PWCGC (ecog)'},[],[],plotm);
+plot_gc({F,Fint},{'PWCGC (envelope)','PWCGC (ecog)'},[],[],0);
