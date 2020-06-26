@@ -5,11 +5,11 @@
 % preproc: preproc or noprproc data
 % task : 'rest_baseline_1', 'rest_baseline_1','sleep', 'stimuli_1', 'stimuli_2';
 %% 
-function [fname, fpath, dataset] = CIFAR_filename(varargin)
+function [fname, dataset] = CIFAR_filename(varargin)
 
 defaultBP = true;
-defaultSubject = 'AnRa';
-defaultTask = 'rest_baseline_1';
+defaultSubject = 'DiAs';
+defaultTask = 'stimuli_1';
 defaultExt = '.set';
 defaultPreproc = false; 
 defaultPforder = 10;
@@ -28,20 +28,6 @@ addParameter(p, 'thresh' , defaultThresh,@isscalar);
 addParameter(p, 'basis', defaultBasis,@isvector);
 
 parse(p, varargin{:});
-
-global cfsubdir
-
-if p.Results.BP
-%     preprocDir = ppDir('preproc', p.Results.preproc, 'pforder', ... 
-%         p.Results.pforder, 'thresh', p.Results.thresh, 'basis', p.Results.basis);
-     ddir = fullfile('bipolar_montage');
-else
-%     preprocDir = ppDir('preproc', p.Results.preproc, 'pforder', ...
-%         p.Results.pforder, 'thresh', p.Results.thresh, 'basis', p.Results.basis);
-    ddir = fullfile('raw_signal');
-end
-
-fpath = fullfile(cfsubdir,p.Results.subject,'EEGLAB_datasets',ddir);
 
 if p.Results.BP
     dataset = [p.Results.subject '_' 'freerecall_' p.Results.task '_preprocessed_BP_montage'];

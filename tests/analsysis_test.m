@@ -76,15 +76,10 @@ EEG_envelope.data = envelope;
 EEG_filt = EEG;
 EEG_filt.data = tsdata_filt;
 
-close all
 %title: 60-80 Hz envelope
 
-% %% Plot envelope and filter on same 
-% 
-% subplot(2,1,1)
-% plot(bpFilt)
-% subplot(2,1,2)
-% plot_envelope(tsdata_filt,envelope,trange, chanum, fs)
+
+plot_envelope(tsdata_filt,envelope,trange, chanum, fs)
 
 %% Pick chans and envelope
 

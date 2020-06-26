@@ -1,8 +1,8 @@
 %% Plot autospec
 %Plot autospectral density
 function plot_autocpsd(cpsd,f,fs,nchans)
-log_cpsd=20*log10(cpsd);
-plot(f,log_cpsd);
+%log_cpsd=20*log10(cpsd);
+loglog(f,cpsd);
 xlabel('frequency (Hz)');
 ylabel('power (dB)');
 xlim([0 fs/2]);

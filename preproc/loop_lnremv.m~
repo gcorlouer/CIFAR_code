@@ -1,0 +1,13 @@
+subjects = {'AnRa', 'AnRi', 'ArLa', 'BeFe','DiAs', 'FaWa','JuRo', 'KiAl', 'NeLa', 'SoGi'};
+tasks = {'rest_baseline_1', 'rest_baseline_2', 'stimuli_1','stimuli_2'};
+montage = 'raw_signal';
+BP = false;
+
+for i= 1:size(subjects,2)
+    subject = subjects{i};
+    for j = 1:size(tasks,2)
+        task = tasks{i};
+
+        lnremv;
+    end
+end
