@@ -4,6 +4,7 @@ if ~exist('subject', 'var') subject = 'DiAs'; end
 if ~exist('task', 'var') task = 'stimuli_1'; end
 if ~exist('BP','var') BP = false; end
 if ~exist('ext','var') ext = '_HFB_visual_epoch_Face.mat'; end
+if ~exist('GC_ext', 'var') GC_ext = ['_GC',ext]; end
 % Modeling
 if ~exist('multitrial', 'var') multitrial = true; end
 if ~exist('mosel', 'var') mosel = 4; end 
@@ -17,8 +18,7 @@ dataset = load(fpath);
 
 ch_names = dataset.chan;
 ROIs = dataset.brodman;
-category = dataset.category;
-
+cat = dataset.cat
 
 Y = dataset.data;
 X = permute(Y, [2 3 1]); % Select good format for GC analysis
@@ -52,7 +52,6 @@ else
 end
 
 %% Save GC estimation
-GC_ext = ['_GC',ext];
 GC_name = CIFAR_filename('ext',GC_ext, 'task', task, 'BP', BP);
 GC_path = fullfile(datadir, GC_name);
-save(GC_path, 'F','ch_names','ROIs', 'category');
+save(GC_path, 'F','ch_names','ROIs', '');
