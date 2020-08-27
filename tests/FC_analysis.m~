@@ -1,0 +1,40 @@
+%% Parameters 
+
+if ~exist('subject', 'var') subject = 'DiAs'; end
+if ~exist('task', 'var') task = 'stimuli_1'; end
+if ~exist('BP','var') BP = false; end
+if ~exist('cat','var') cat = 'Face'; end % Presented category
+
+% Modeling
+if ~exist('multitrial', 'var') multitrial = true; end
+
+
+%% Import data
+
+[X, dataset] = import_preproc_data();
+
+ch_names = dataset.chan;
+ROIs = dataset.brodman;
+category = dataset.category;
+DK = dataset.DK;
+
+nchans = size(X,1);
+%% Functional connectivity TO REDO
+
+group = {1:10};
+connectivity = 'intra'; 
+
+[MI, stats] = multi_info(X, 'connectivity', connectivity, 'multitrial', multitrial, 'group', group);
+
+%% Re Functional connectivity
+
+% pairwise conditional MI :
+
+
+X = cov_to_pwcmi(V,m,N);
+% Key functions to use: 
+
+cov_to_pwcmi(V,m,N)
+
+cov_to_gwcmi(V,group,m,N) % pairwise groupe condition mutual information
+
