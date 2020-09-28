@@ -29,5 +29,6 @@ fpath = fullfile(datadir, fname);
 
 dataset = load(fpath);
 Y = dataset.data;
-X = permute(Y, [2 3 1]); % Select good format for FC analysis
+X = permute(Y, [2 3 1]);
+X = double(X); % Select good format for FC analysis
 end 

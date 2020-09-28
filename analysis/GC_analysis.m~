@@ -11,8 +11,6 @@ if ~exist('mosel', 'var') mosel = 4; end
 
 regmode = 'LWR';
 alpha = 0.05;
-mhtc = 'FDRD';
-
 
 %% Import data
 
@@ -24,10 +22,7 @@ category = dataset.category;
 DK = dataset.DK;
 
 [nchans, nobs, ntrials] = size(X);
-chan_type = ['F','P','B'];
-iF = cat2icat(category, 'F');
-iP = cat2icat(category, 'P');
-iB = cat2icat(category, 'B');
+
 %% Modeling
 
 % VAR model 
@@ -40,19 +35,21 @@ tic
 [SSmodel, SSmoest] = SSmodeling(X, 'mosel', mosel, 'multitrial', multitrial);
 toc   
 
+
+%% Groupwise GC 
+
+
+
 %% Groupwise GC
 
 target_chan = iB;
 source_chan = iF;
 tic
-[F, sig_p] = SSmodel_to_mvgc_permtest(X, SSmodel,target_chan, source_chan);
+[F, sig_p] = ss_to_mvgc_permtest(X, SSmodel,target_chan, source_chan);
 toc
 
 %% Pairwise GC
 
-tic
-[F, sig_p] = SSmodel_to_pwcgc_permtest(X, SSmodel, 'alpha',alpha, 'nperms',nperms);
-toc
 
 %% Pairwise GC
 
@@ -107,6 +104,10 @@ plot_gc(pdata,ptitle,[],[],[]);
 % colorbar
 
 %% Count significant GC connections 
+chan_type = ['F','P','B'];
+iF = cat2icat(category, 'F');
+iP = cat2icat(category, 'P');
+iB = cat2icat(category, 'B');
 
 nsig = count_significant_GC(sig_p, iB,iP);
     

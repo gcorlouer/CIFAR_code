@@ -13,13 +13,13 @@ global home_dir CIFAR_root code_root% parent folder of CIFAR directory
 home_dir = fullfile('~');
 CIFAR_root = fullfile(home_dir, 'projects', 'CIFAR') ; 
 addpath(genpath(CIFAR_root));
-
+rmpath(fullfile(CIFAR_root, 'code_matlab','deprecated')); % remove deprecated code to avoid confusion
 fprintf('[CIFAR startup] Added path %s and appropriate subpaths\n',CIFAR_root);
 
 % Initialize mvgc library
 
 global mvgc_root;
-mvgc_root = fullfile(home_dir,'toolboxes','mvgc_v2.0');
+mvgc_root = fullfile(home_dir,'toolboxes','MVGC2');
 assert(exist(mvgc_root,'dir') == 7,'bad MVGC path: ''%s'' does not exist or is not a directory',mvgc_root);
 cd(mvgc_root);
 startup;
