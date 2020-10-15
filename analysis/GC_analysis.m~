@@ -11,6 +11,8 @@ if ~exist('mosel', 'var') mosel = 4; end
 
 regmode = 'LWR';
 alpha = 0.05;
+mhtc = 'FDRD';
+nperms = 100;
 
 %% Import data
 
@@ -22,7 +24,12 @@ category = dataset.category;
 DK = dataset.DK;
 
 [nchans, nobs, ntrials] = size(X);
-
+% Return Face, place, and bicat channel indices
+chan_type = ['F','P','B'];
+iF = cat2icat(category, 'F');
+iP = cat2icat(category, 'P');
+iB = cat2icat(category, 'B');
+category = category(:,1);
 %% Modeling
 
 % VAR model 
@@ -35,36 +42,21 @@ tic
 [SSmodel, SSmoest] = SSmodeling(X, 'mosel', mosel, 'multitrial', multitrial);
 toc   
 
-
-%% Groupwise GC 
-
-
-
 %% Groupwise GC
 
 target_chan = iB;
 source_chan = iF;
+
 tic
-[F, sig_p] = ss_to_mvgc_permtest(X, SSmodel,target_chan, source_chan);
+[F, sig_p] = SSmodel_to_mvgc_permtest(X, SSmodel,target_chan, source_chan);
 toc
 
 %% Pairwise GC
 
+tic
+[F, sig_p] = SSmodel_to_pwcgc_permtest(X, SSmodel, 'alpha',alpha, 'nperms',nperms);
+toc
 
-%% Pairwise GC
-
-sspf = 2*VARmoest(mosel);
-ssmo = SSmoest(mosel);
-dclags = decorrlags(SSmodel.rhoa,nobs,alpha);
-nperms = 100; 
-regmode = 'LWR';
-alpha = 0.05;
-mhtc = 'FDR'; 
-ptic('\n*** tsdata_to_mvgc_pwc_permtest\n');
-[F,pval,A,C,K,V] = tsdata_to_ss_pwcgc_permtest(X,sspf,ssmo,nperms,dclags);
-ptoc('*** tsdata_to_mvgc_pwc_permtest took ',[],1);
-
-sig_p  = significance(pval,alpha,mhtc);
 
 %% Plot
 
@@ -77,37 +69,26 @@ plot_gc(pdata,ptitle,[],[],[]);
 
 %% Plot and compare quantities
 
-% n = nchans ;
-% subplot(1,2,1)
-% colormap('hot');
-% imagesc(F);
-% axis('square');
-% xlabel('from');
-% ylabel('to');
-% set(gca,'XTick',1:n);
-% set(gca,'XTickLabel',1:n);
-% set(gca,'YTick',1:n);
-% set(gca,'YTickLabel',n:-1:1);
-% colorbar
-% 
-% subplot(1,2,2)
-% colormap('hot');
-% imagesc(sig_p);
-% axis('square');
-% xlabel('from');
-% ylabel('to');
-% 
-% set(gca,'XTick',1:n);
-% set(gca,'XTickLabel',1:n);
-% set(gca,'YTick',1:n);
-% set(gca,'YTickLabel',n:-1:1);
-% colorbar
+subplot(1,2,1)
+plot_pcgc(F, category)
+title('PWCGC (SS estimated)')
+subplot(1,2,2)
+plot_pcgc(sig_p, category)
+title('Permutation test')
 
-%% Count significant GC connections 
-chan_type = ['F','P','B'];
-iF = cat2icat(category, 'F');
-iP = cat2icat(category, 'P');
-iB = cat2icat(category, 'B');
+%% Count significant pairwise GC connections 
+
 
 nsig = count_significant_GC(sig_p, iB,iP);
-    
+fprintf('%d significant GC from B to P.\n', nsig);
+nsig = count_significant_GC(sig_p, iB,iF);
+fprintf('%d significant GC from B to F.\n', nsig);
+nsig = count_significant_GC(sig_p, iF,iB);
+fprintf('%d significant GC from F to B.\n', nsig);
+nsig = count_significant_GC(sig_p, iP,iB);
+fprintf('%d significant GC from P to B.\n', nsig);
+nsig = count_significant_GC(sig_p, iP,iF);
+fprintf('%d significant GC from P to P.\n', nsig);
+nsig = count_significant_GC(sig_p, iB,iP);
+fprintf('%d significant GC from B to P.\n', nsig);
+

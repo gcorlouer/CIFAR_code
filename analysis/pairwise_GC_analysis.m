@@ -1,3 +1,5 @@
+%% ToDo : matrix counting significant connections
+
 %% Parameters 
 
 % Input data
@@ -14,7 +16,7 @@ if ~exist('regmode', 'var') regmode = 'LWR'; end % OLS or LWR
 % Statistics
 if ~exist('alpha', 'var') alpha = 0.05; end
 if ~exist('mhtc', 'var') mhtc = 'FDRD'; end % multiple hypothesis testing correction
-if ~exist('npersm', 'var') nperms = 10; end % 
+if ~exist('nperms', 'var') nperms = 100; end % 
 
 %% Import preprocessed data
 
@@ -33,6 +35,7 @@ iF = cat2icat(category, 'F');
 iP = cat2icat(category, 'P');
 iB = cat2icat(category, 'B');
 category = category(:,1);
+
 %% Modeling
 
 % VAR model 
@@ -61,19 +64,23 @@ subplot(1,2,2)
 plot_pcgc(sig_p, category)
 title('Permutation test')
 
-%% Count significant pairwise GC connections 
+%% Significant connection matrix
+
+ncat = size(chan_type,2);
+pGC_sig = zeros(ncat, ncat);
+for i=1:ncat
+    for j=1:ncat
+        itarget_chan =  cat2icat(category, chan_type(i));
+        isource_chan =  cat2icat(category, chan_type(j));
+        nsig = count_significant_GC(sig_p, isource_chan, itarget_chan);
+        pGC_sig(i,j) = nsig;
+    end
+end
 
 
-nsig = count_significant_GC(sig_p, iB,iP);
-fprintf('%d significant GC from B to P.\n', nsig);
-nsig = count_significant_GC(sig_p, iB,iF);
-fprintf('%d significant GC from B to F.\n', nsig);
-nsig = count_significant_GC(sig_p, iF,iB);
-fprintf('%d significant GC from F to B.\n', nsig);
-nsig = count_significant_GC(sig_p, iP,iB);
-fprintf('%d significant GC from P to B.\n', nsig);
-nsig = count_significant_GC(sig_p, iP,iF);
-fprintf('%d significant GC from P to F.\n', nsig);
-nsig = count_significant_GC(sig_p, iF,iP);
-fprintf('%d significant GC from F to P.\n', nsig);
-
+subplot(1,2,1)
+plot_pcgc(pGC_sig, chan_type')
+title('GC significant connection')
+subplot(1,2,2)
+plot_pcgc(sig_p, category)
+title('Permutation test')

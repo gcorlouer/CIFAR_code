@@ -28,7 +28,7 @@ fname = CIFAR_filename('ext', ext, 'task', task, 'BP', BP);
 fpath = fullfile(datadir, fname);
 
 dataset = load(fpath);
-Y = dataset.data;
+Y = dataset.multitrial_ts;
 X = permute(Y, [2 3 1]);
 X = double(X); % Select good format for FC analysis
 end 

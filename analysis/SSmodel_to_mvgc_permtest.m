@@ -1,5 +1,7 @@
 function [F, sig_p] = SSmodel_to_mvgc_permtest(X, SSmodel, target_chan, source_chan, varargin)
 
+w =10; 
+
 defaultAlpha = 0.05;
 defaultNperms = 100; 
 defaultMhtc = 'FDRD';
@@ -24,14 +26,14 @@ alpha = p.Results.alpha;
 nperms = p.Results.nperms;
 mhtc = p.Results.mhtc;
 
-[nchan, nobs, ntrials] = size(p.Results.X);
-dclags = decorrlags(SSmodel.rhoa,nobs,alpha);
-sspf = SSmodel.pf;
-ssmo = SSmodel.mosvc;
+[nchan, nobs, ntrials, nwin] = size(p.Results.X);
+dclags = decorrlags(SSmodel(w).rhoa,nobs,alpha);
+sspf = SSmodel(w).pf;
+ssmo = SSmodel(w).mosvc;
 
 
 ptic('\n*** tsdata_to_mvgc_pwc_permtest\n');
-[F,pval,A,C,K,V] = tsdata_to_ss_mvgc_permtest(X,target_chan,source_chan,sspf,ssmo,nperms,dclags);
+[F,pval,A,C,K,V] = tsdata_to_ss_mvgc_permtest(X(:,:,:,w),target_chan,source_chan,sspf,ssmo,nperms,dclags);
 ptoc('*** tsdata_to_mvgc_pwc_permtest took ',[],1);
 
 sig_p  = significance(pval,alpha,mhtc);
