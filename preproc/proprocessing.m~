@@ -1,0 +1,96 @@
+function preprocessed_signal = proprocessing(varargin)
+
+defaultBP = false;
+defaultSubject = 'AnRa';
+defaultTask = 'rest_baseline_1';
+defaultExt = '_bad_chans_removed.mat';
+
+defaultThresh = 5;
+defaultBasis = 'sinusoids';
+defaultW = [];
+defaultNiter = 3;
+defaultDeg_max = 10;
+
+p = inputParser;
+
+addParameter(p, 'BP', defaultBP, @islogical);
+addParameter(p, 'subject', defaultSubject, @isvector);
+addParameter(p, 'task', defaultTask,@isvector);
+addParameter(p, 'ext', defaultExt,@isvector);
+addParameter(p, 'thresh' , defaultThresh,@isscalar);
+addParameter(p, 'basis', defaultBasis,@isvector);
+addParameter(p, 'w', defaultW);
+addParameter(p, 'niter', defaultNiter);
+addParameter(p, 'deg_max', defaultDeg_max);
+
+parse(p, varargin{:});
+
+BP = p.Results.BP;
+subject = p.Results.subject;
+task =  p.Results.task;
+ext =  p.Results.ext;
+
+thresh =  p.Results.thresh;
+basis =  p.Results.basis;
+w =  p.Results.w;
+niter =  p.Results.niter;
+deg_max =  p.Results.deg_max;
+
+%% Load data 
+
+datadir = cf_datadir('subject', subject);
+[fname, dataset] = CIFAR_filename('subject', subject, 'task',task, ... 
+    'ext', ext, 'BP',BP);
+fpath = fullfile(datadir, fname);
+
+data = load(fpath);
+
+X = data.time_series;
+
+[nchans, nobs] = size(X);
+
+%% Detrend
+
+x = X';
+y = x;
+
+for i=1:deg_max
+    order=i;
+    [y,w,r]=nt_detrend(y,order,w,basis,thresh,niter);
+end
+
+
+%% Outlier removals 
+
+% x = X';
+% y = x;
+% 
+% w = [];
+% [w,y]=nt_outliers(y,w,thresh,niter);
+% nsample = nchans*nobs;
+% noutl = nsample-sum(w, 'all');
+% outlier_fraction = noutl/nsample*100;
+% fprintf('%f outlier removed', outlier_fraction)
+
+%% Rereference by weighted mean
+
+[y,mn]=nt_rereference(y,w);
+
+%% Demean
+
+[y,mn]=nt_demean(y,w);
+
+%% Save file
+
+X = y';
+
+preprocessed_signal.data = X;
+preprocessed_signal.weights = w;
+preprocessed_signal.outlier_fraction = outlier_fraction;
+
+ext2save = '_preprocessed.mat';
+fname2save = [dataset,ext2save];
+fpath2save = fullfile(datadir, fname2save);
+save(fpath2save, 'preprocessed_signal')
+
+end

@@ -64,16 +64,16 @@ title('Permutation test')
 %% Count significant pairwise GC connections 
 
 
-nsig = count_significant_GC(sig_p, iB,iP);
-fprintf('%d significant GC from B to P.\n', nsig);
-nsig = count_significant_GC(sig_p, iB,iF);
-fprintf('%d significant GC from B to F.\n', nsig);
-nsig = count_significant_GC(sig_p, iF,iB);
-fprintf('%d significant GC from F to B.\n', nsig);
-nsig = count_significant_GC(sig_p, iP,iB);
-fprintf('%d significant GC from P to B.\n', nsig);
-nsig = count_significant_GC(sig_p, iP,iF);
-fprintf('%d significant GC from P to F.\n', nsig);
-nsig = count_significant_GC(sig_p, iF,iP);
-fprintf('%d significant GC from F to P.\n', nsig);
+% nsig = count_significant_GC(sig_p, iB,iP);
+% fprintf('%d significant GC from B to P.\n', nsig);
+% nsig = count_significant_GC(sig_p, iB,iF);
+% fprintf('%d significant GC from B to F.\n', nsig);
+% nsig = count_significant_GC(sig_p, iF,iB);
+% fprintf('%d significant GC from F to B.\n', nsig);
+% nsig = count_significant_GC(sig_p, iP,iB);
+% fprintf('%d significant GC from P to B.\n', nsig);
+% nsig = count_significant_GC(sig_p, iP,iF);
+% fprintf('%d significant GC from P to F.\n', nsig);
+% nsig = count_significant_GC(sig_p, iF,iP);
+% fprintf('%d significant GC from F to P.\n', nsig);
 

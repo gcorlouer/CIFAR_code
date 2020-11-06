@@ -11,7 +11,7 @@ function [tsdata,var_coef, corr_res, connectivity_matrix] = var_sim(tsdim, varar
 %% 
 
 defaultMorder = 5;
-defaultSpecrad = 0.99;
+defaultSpecrad = 0.98;
 defaultW = []; % decay weighting parameter: empty (default) = don't weight
 defaultG = []; % multi-information (g = -log|R|): g = 0 yields zero correlation
 defaultNtrials = 1;

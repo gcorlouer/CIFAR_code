@@ -1,7 +1,8 @@
-function plot_pcgc(F, category)
+function plot_pcgc(F, clims, category)
+
 n = size(category,1);
 colormap(flipud(bone));
-imagesc(F);
+imagesc(F, clims);
 axis('square');
 xlabel('from');
 ylabel('to');

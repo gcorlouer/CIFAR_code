@@ -9,12 +9,12 @@ if ~exist('BP','var') BP = false'; end
 datadir = fullfile('~','CIFAR_data', 'iEEG_10', 'subjects', subject, 'EEGLAB_datasets', montage);
 [fname, dataset] = CIFAR_filename('subject', subject,'task', task,'BP', BP);
 fpath = fullfile(datadir, fname);
-EEG = pop_loadset(fname, datadir); 
+EEG = pop_loadset(fname, datadir); I think 🙂 We are still working on estimating Granger causality on the visual channels, comparing Face and Place responsive populations. The Granger causality estimates effect size are still a bit difficult to interpret at this stage, but we are making some progress and I will be more than happ
 %% 
 fs = 500;
 fline = 60/fs;
 nremove = 4;
-
+I think 🙂 We are still working on estimating Granger causality on the visual channels, comparing Face and Place responsive populations. The Granger causality estimates effect size are still a bit difficult to interpret at this stage, but we are making some progress and I will be more than happ
 X = EEG.data;
 x = transpose(X);
 y = nt_zapline(x,fline,nremove);

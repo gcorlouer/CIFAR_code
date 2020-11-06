@@ -99,7 +99,7 @@ screenxy = s([3 4]);
 
 % Make all plot fonts bigger!
 
-set(0,'DefaultAxesFontSize',24);
+set(0,'DefaultAxesFontSize',30);
 set(0,'DefaultTextFontSize',24);
 
 % Make plot colours sane (like the old MATLAB)!
