@@ -3,7 +3,7 @@ function preprocessed_signal = preprocessing(varargin)
 defaultBP = false;
 defaultSubject = 'AnRa';
 defaultTask = 'rest_baseline_1';
-defaultExt = '_bad_chans_removed.mat';
+defaultExt = '_lnrmv.set';
 
 defaultThresh = 5;
 defaultBasis = 'sinusoids';
@@ -37,15 +37,12 @@ niter =  p.Results.niter;
 deg_max =  p.Results.deg_max;
 
 %% Load data 
-
-datadir = cf_datadir('subject', subject);
-[fname, dataset] = CIFAR_filename('subject', subject, 'task',task, ... 
-    'ext', ext, 'BP',BP);
+datadir = fullfile('~','CIFAR_data', 'iEEG_10', 'subjects', subject, 'EEGLAB_datasets', 'preproc');
+[fname, dataset] = CIFAR_filename('subject', subject,'task', task,'BP', BP, 'ext', ext);
 fpath = fullfile(datadir, fname);
+EEG = pop_loadset(fname, datadir); 
 
-data = load(fpath);
-
-X = data.time_series;
+X = EEG.data;
 
 [nchans, nobs] = size(X);
 
@@ -73,17 +70,13 @@ outlier_fraction = noutl/nsample*100;
 fprintf('%f outlier removed', outlier_fraction)
 
 
-%% Save file
-
 X = y';
 
-preprocessed_signal.data = X;
-preprocessed_signal.weights = w;
-preprocessed_signal.outlier_fraction = outlier_fraction;
-
-ext2save = '_preprocessed.mat';
-fname2save = [dataset,ext2save];
-fpath2save = fullfile(datadir, fname2save);
-save(fpath2save, 'preprocessed_signal')
-
+%% Save data 
+ext = '_preprocessed.set';
+fpath = fullfile('~','CIFAR_data', 'iEEG_10', 'subjects', subject, 'EEGLAB_datasets');
+fpath = fullfile(fpath, 'preproc');
+[fname, dataset] = CIFAR_filename('subject', subject,'task', task,'BP', BP, 'ext', ext);
+EEG.data = X;
+EEG = pop_saveset(EEG, 'filename', fname, 'filepath', fpath, 'savemode', 'onefile');
 end

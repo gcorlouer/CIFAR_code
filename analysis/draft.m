@@ -2,7 +2,6 @@
 
 % Input data
 if ~exist('subject', 'var') subject = 'DiAs'; end
-if ~exist('task', 'var') task = 'stimuli_1'; end
 if ~exist('BP','var') BP = false; end % Bipolar montage
 if ~exist('cat','var') state = 'Place'; end %  'Rest', 'Face' or 'Place'
 
@@ -20,28 +19,24 @@ if ~exist('nperms', 'var') nperms = 110; end %
 %% 
 
 state = {'Face','Place','Rest'};
-task = {'stimuli_1','stimuli_1','rest_baseline_1'};
-populations = {'V1', 'V2','O','F'};
+populations = {'V1', 'V2', 'P','F'};
 npop = size(populations,2);
 
 nstate = size(state,2);
 GC = zeros(npop,npop,nstate);
+
 for i=1:nstate
     
-    [F(:,:,i), mean_F(:,:,i), visual_populations] = conditional_GC('cat', state{i}, 'multitrial', ... 
-        multitrial, 'task', task{i}, 'BP', BP,'momax', 30, 'mosel', mosel, ...
-        'multitrial', multitrial);
+    [F(:,:,i), mean_F(:,:,i), populations] = pwcgc_analysis('state', state{i}, 'multitrial', ... 
+        multitrial, 'momax', 30, 'mosel', mosel, 'multitrial', multitrial, 'moregmode', regmode);
 end
 
 GC = mean_F;
 pGC = F;
 nchan = size(pGC,1);
-%%  Reorder visual channels
-
-
 
 %% Plot GC
-fs = 250; % Sampling rate
+fs = 500; % Sampling rate
 scale = 1/fs;
 bits = 1/log(2); % convert to bits
 GC_baseline = GC(:,:,3);
@@ -69,7 +64,7 @@ title(['GC baseline, ', state{3}])
 
 %% Plot pGC 
 
-fs = 250; % Sampling rate
+fs = 500; % Sampling rate
 scale = 1/fs;
 bits = 1/log(2); % convert to bits
 pGC_baseline = pGC(:,:,3);
@@ -86,7 +81,7 @@ maxpGC = max(pGC_rel_scale,[], 'all');
 clims = [0 1.5];
 for i=1:2
     subplot(2,2,i)
-    plot_pcgc(pGC_rel_scale(:,:,i), clims, chan_group(:,1))
+    plot_pcgc(pGC_rel_scale(:,:,i), clims)
     title(['Relative GC, ', state{i}, ' trials'])
 end
 pGC_baseline_scale = pGC_baseline*fs*bits;
@@ -95,8 +90,3 @@ subplot(2,2,3)
 plot_pcgc(pGC_baseline_scale, clims, chan_group(:,1))
 title(['GC baseline, ', state{3}])
 
-
-%% Plot GC relative to Place
-GC_Frel = GC(:,:,1) - GC(:,:,2);
-GC_Frel = GC_Frel*fs*bits;
-plot_pcgc(GC_Frel, clims, chan_type')

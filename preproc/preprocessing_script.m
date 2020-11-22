@@ -9,6 +9,8 @@ for i=1:nsubjects
     subject = subjects{i};
     for j=1:ntasks
         task = tasks{j};
-        preprocessed_signal = preprocessing('subject', subject, 'task', task, 'deg_max', deg_max);
+        preprocessing('subject', subject, 'task', task, 'deg_max', deg_max);
     end
 end
+
+

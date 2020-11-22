@@ -1,4 +1,4 @@
-function [F, mean_F, chan_info] = conditional_GC(varargin)
+function [F, mean_F, visual_populations, chan_group] = conditional_GC(varargin)
 
 defaultSubject = 'DiAs';
 defaultTask = 'stimuli_1'; 
@@ -36,13 +36,18 @@ momax = p.Results.momax;
 moregmode = p.Results.moregmode;
 plotm = p.Results.plotm;
 
-chan_type = ['F','P','B'];
+%groups = {'V1', 'V2', 'O', 'P', 'F'};
 %% Import data
 [X, dataset] = import_preproc_data('subject',subject,'cat', cat, 'multitrial', multitrial, 'task', task, 'BP', BP);
 
-ch_names = dataset.chan;
-category = dataset.category;
-
+chan_name = dataset.chan_name;
+chan_group = dataset.group;
+groups = dataset.groups;
+populations.V1 = dataset.V1;
+populations.V2 = dataset.V2;
+populations.Others = dataset.other;
+populations.Face = dataset.Face;
+% Add populations Place
 [nchans, nobs, ntrials] = size(X);
 
 %% Modeling whole epoched data
@@ -59,23 +64,28 @@ toc
 %% Sliding Pairwise GC effect size
 
 F = sliding_ss_to_pwcgc(SSmodel, nchans);
+F(isnan(F))=0; 
 
 %% Compute average pGC
+fn = fieldnames(populations);
 
-ntype = size(chan_type,2);
+for i=1:numel(fn)
+    populations.(fn{i})
+end
 
-mean_F = zeros(ntype,ntype);
+ngroup = size(groups,1);
 
-for i=1:ntype
-    for j=1:ntype
-        icat = cat2icat(category, chan_type(i));
-        jcat = cat2icat(category, chan_type(j));
-        mean_F(i,j) = mean(F(icat,jcat), [1,2]);
+mean_F = zeros(ngroup,ngroup);
+
+for i=1:numel(fn)
+    for j=1:numel(fn)
+        pop_i = double(populations.(fn{i}));
+        pop_i = pop_i +1; % add one for matlab compatibility
+        pop_j = double(populations.(fn{j}));
+        pop_j = pop_j +1;
+        mean_F(i,j) = mean(F(pop_i,pop_j), [1,2]);
     end
 end
 
-chan_info.names = ch_names;
-chan_info.site = category;
-chan_info.ROI = dataset.DK;
-chan_info.group = ['F','P','B'];
+visual_populations = groups;
 end
