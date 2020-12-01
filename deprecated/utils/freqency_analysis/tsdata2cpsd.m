@@ -28,7 +28,7 @@ addParameter(p, 'logplt', defaultLogplt, @islogical);
 parse(p, X, varargin{:});
 
 [S,freq,fbin] = tsdata_to_cpsd(p.Results.X,p.Results.fs, ... 
-    p.Results.nwin, p.Results.overlap, p.Results.fbin, p.Results.autospec, p.Results.verb);
+    p.Results.nwin, [], p.Results.fbin, p.Results.autospec, p.Results.verb);
 
 if p.Results.plotm 
     plot_autocpsd(S,freq,p.Results.fs,nchan, p.Results.logplt);

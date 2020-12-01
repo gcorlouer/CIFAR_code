@@ -11,6 +11,7 @@ defaulSparms = [];
 defaultAutospec = true;
 defaultVerb = 0 ;
 defaultLogplt = true;
+defaultOverlap = [];
 
 p = inputParser;
 
@@ -24,11 +25,12 @@ addParameter(p, 'sparms', defaulSparms);
 addParameter(p, 'autospec', defaultAutospec, @islogical);
 addParameter(p, 'verb', defaultVerb);
 addParameter(p, 'logplt', defaultLogplt, @islogical);
+addParameter(p, 'overlap', defaultOverlap);
 
 parse(p, X, varargin{:});
 
 [S,freq,fbin] = tsdata_to_cpsd(p.Results.X,p.Results.fs, ... 
-    p.Results.nwin, p.Results.overlap, p.Results.fbin, p.Results.autospec, p.Results.verb);
+    p.Results.nwin, [], p.Results.fbin, p.Results.autospec, p.Results.verb);
 
 if p.Results.plotm 
     plot_autocpsd(S,freq,p.Results.fs,nchan, p.Results.logplt);
