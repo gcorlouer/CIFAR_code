@@ -1,6 +1,7 @@
 % Input data
 if ~exist('subject', 'var') subject = 'DiAs'; end
 if ~exist('cat','var') state = 'Face'; end %  'Rest', 'Face' or 'Place'
+if ~exist('cat','var') fs = 500; end %
 
 % Modeling
 if ~exist('multitrial', 'var') multitrial = true; end 
@@ -37,3 +38,7 @@ F = pairwise_conditional_GC(X, 'momax', momax, 'mosel', mosel, ...
 
 TE = GC_to_TE(F, fs);
 
+%% Plot result
+population = {'Face', 'V1'};
+clims = [0 0.4];
+plot_pcgc(TE, clims, population')

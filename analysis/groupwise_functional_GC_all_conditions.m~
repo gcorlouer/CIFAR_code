@@ -1,0 +1,23 @@
+% Input data
+if ~exist('subject', 'var') subject = 'DiAs'; end
+
+%%
+
+ncat = 10;
+ggc_analysis_test
+TE_rest = group_TE;
+ncat = 11;
+ggc_analysis_test
+TE_face = group_TE;
+ncat = 12;
+ggc_analysis_test
+TE_place = group_TE;
+
+%% 
+
+max_TE_rest = max(TE_rest, [],'all');
+clims = [0 max_TE];
+population = channel_to_population;
+plot_title = ['Transfer entropy ', fn{ncat}];  
+plot_pcgc(fgroup_TE, clims, fn_pop)
+title(plot_title)

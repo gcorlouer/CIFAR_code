@@ -10,4 +10,5 @@ set(gca,'XTick',1:n);
 set(gca,'XTickLabel',category);
 set(gca,'YTick',1:n);
 set(gca,'YTickLabel',category);
+xtickangle(45)
 colorbar
