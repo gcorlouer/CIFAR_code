@@ -47,7 +47,7 @@ mhtc =  p.Results.mhtc;
     'multitrial', multitrial, 'moregmode', moregmode, 'plotm', plotm );
 
 
-%% Sliding Pairwise GC effect size
+%% Pairwise GC effect size
 
 
 F = ss_to_pwcgc(SSmodel.A, ... 
