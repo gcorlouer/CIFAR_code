@@ -4,13 +4,13 @@ if ~exist('subject', 'var') subject = 'DiAs'; end
 %%
 
 ncat = 10;
-pgc_analysis_test
+pgc_functional_population
 TE_rest = TE;
 ncat = 11;
-pgc_analysis_test
+pgc_functional_population
 TE_face = TE;
 ncat = 12;
-pgc_analysis_test
+pgc_functional_population
 TE_place = TE;
 
 %% 

@@ -1,6 +1,6 @@
 % Input data
 if ~exist('subject', 'var') subject = 'DiAs'; end
-fs = 100;
+fs = 250;
 %% Load data
 datadir = fullfile('~', 'projects', 'CIFAR', 'CIFAR_data', 'iEEG_10', ... 
     'subjects', subject, 'EEGLAB_datasets', 'preproc');
@@ -14,11 +14,10 @@ fn = fieldnames(time_series);
 %% Plot evok response
 
 leg = [];
-dt = 1/500;
+dt = 1/fs;
 trange = [];
-leg = {'V1', 'Face'};
 for i=1:3
-    X = time_series.(fn{i});
+    X = time_series.(fn{i+10});
     evok = mean(X,3);
     subplot(3,1,i)
     plot_tsdata(evok,leg,dt,trange)
@@ -31,17 +30,20 @@ end
 %% Plot cpsd
 
 
-X = time_series.(fn{i});
+X = time_series.(fn{i+10});
 [nchans, nobs, ntrials] = size(X);
 [S,f] = tsdata_to_cpsd(X,fs, [],[],[],true); 
 plot_autocpsd(S,f,fs)
 
 %% Detrend and demean HFN
 deg_max = 2;
+[n, m, N] = size(X);
 for i=1:3
-    X = time_series.(fn{i});
+    X = time_series.(fn{i+10});
     X = detrend_HFB(X, 'deg_max', deg_max);
-    evok = mean(X,3);
+    evok = mean(X,[1 3]); % average over trials and channels for better visibility
+    % N = n*N;
+    % SE = std(X,[1 3])/sqrt(N);
     subplot(3,1,i)
     plot_tsdata(evok,leg,dt,trange)
     xlabel('Time (s)')
@@ -53,7 +55,7 @@ end
 
 %% Check Gaussianity 
 for i=1:3
-    X = time_series.(fn{i});
+    X = time_series.(fn{i+10});
     [nchans, nobs, ntrials] = size(X);
     X = detrend_HFB(X);
     subplot(3,1,i)

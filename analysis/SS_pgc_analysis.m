@@ -31,7 +31,7 @@ X = time_series.(fn{ncat});
 X = detrend_HFB(X, 'deg_max', 2);
 [n, m, N] = size(X);
 
-%% VAR analysis
+%% SS analysis
 
 [F, SSmodel, SSmoest, sig] = pwcgc_from_SSmodel(X, 'momax', momax, 'mosel', mosel, ... 
     'multitrial', multitrial, 'moregmode', moregmode, 'nperms', nperms);

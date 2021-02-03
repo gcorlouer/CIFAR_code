@@ -45,7 +45,7 @@ TE = GC_to_TE(F, fs);
 
 fn_pop = fieldnames(populations);
 npop = size(fn_pop,1);
-
+clear fgroup_TE
 for i = 1:npop
     for j=1:npop
         fgroup_TE(i,j) = mean2(TE(populations.(fn_pop{i}),populations.(fn_pop{j})));
