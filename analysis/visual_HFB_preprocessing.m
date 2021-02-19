@@ -29,7 +29,7 @@ for i=1:3
 end
 %% Plot cpsd
 
-
+i = 1;
 X = time_series.(fn{i+10});
 [nchans, nobs, ntrials] = size(X);
 [S,f] = tsdata_to_cpsd(X,fs, [],[],[],true); 
@@ -41,7 +41,7 @@ deg_max = 2;
 for i=1:3
     X = time_series.(fn{i+10});
     X = detrend_HFB(X, 'deg_max', deg_max);
-    evok = mean(X,[1 3]); % average over trials and channels for better visibility
+    evok = mean(X,3); % average over trials and channels for better visibility
     % N = n*N;
     % SE = std(X,[1 3])/sqrt(N);
     subplot(3,1,i)

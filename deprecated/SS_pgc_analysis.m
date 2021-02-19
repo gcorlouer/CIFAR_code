@@ -1,27 +1,21 @@
 % Input data
 if ~exist('subject', 'var') subject = 'DiAs'; end
 if ~exist('fs','var') fs = 250; end 
-if ~exist('ncat','var') ncat = 12; end % 11: rest, 12: face, 13: place
+if ~exist('ncat','var') ncat = 2; end 
 
 % Modeling
 if ~exist('multitrial', 'var') multitrial = true; end 
 if ~exist('mosel', 'var') mosel = 2; end % Select model order 1: AIC, 2: BIC, 3: HQC, 4: LRT
-if ~exist('momax', 'var') momax = 10; end % Max model order 
+if ~exist('momax', 'var') momax = 20; end % Max model order 
 if ~exist('moregmode', 'var') moregmode = 'OLS'; end % OLS or LWR
 
 % Statistics
 if ~exist('alpha', 'var') alpha = 0.05; end
 if ~exist('mhtc', 'var') mhtc = 'FDRD'; end % multiple hypothesis testing correction
 if ~exist('nperms', 'var') nperms = 110; end % 
-if ~exist('LR', 'var') LR = true; end % If false F test
+if ~exist('LR', 'var') LR = true; end % 
 
-% Temporal window in seconds
-
-if ~exist('tmin', 'var') tmin = 0.3; end
-if ~exist('tmax', 'var') tmax = 1; end
-if ~exist('t_0', 'var') t_0 = -0.50; end
-
-%% Loading data
+%%
 
 datadir = fullfile('~', 'projects', 'CIFAR', 'CIFAR_data', 'iEEG_10', ... 
     'subjects', subject, 'EEGLAB_datasets', 'preproc');
@@ -29,59 +23,36 @@ fname = [subject, '_visual_HFB_all_categories.mat'];
 fpath = fullfile(datadir, fname);
 
 time_series = load(fpath);
-time = time_series.time;
 
 fn = fieldnames(time_series);
 
 X = time_series.(fn{ncat});
-
-channel_to_population = time_series.channel_to_population;
-
-%% Crop signal
-
-% [X, time] = crop_signal(X, time, 'tmin', tmin, 'tmax', tmax, 'fs', fs, 't_0', t_0);
-
-%% Detrending
-
+%X = X(:, srange, :);
 X = detrend_HFB(X, 'deg_max', 2);
 [n, m, N] = size(X);
 
-%% VAR analysis
+%% SS analysis
 
-[F, VARmodel, VARmoest, sig] = pwcgc_from_VARmodel(X, 'momax', momax, 'mosel', mosel, ... 
-    'multitrial', multitrial, 'moregmode', moregmode, 'LR', LR);
+[F, SSmodel, SSmoest, sig] = pwcgc_from_SSmodel(X, 'momax', momax, 'mosel', mosel, ... 
+    'multitrial', multitrial, 'moregmode', moregmode, 'nperms', nperms);
 
 TE = GC_to_TE(F, fs);
+%% Plot result 
 
-%% Plot result for functional classification
-
-TE_max = max(TE, [],'all');
-clims = [0 TE_max];
+clims = [0 0.5];
+population = {'V1', 'Face'};
 plot_title = ['Transfer entropy ', fn{ncat}];  
 subplot(1,2,1)
-plot_pcgc(TE, clims, channel_to_population)
+plot_pcgc(TE, clims, population')
 title(plot_title)
 subplot(1,2,2)
-plot_pcgc(sig, [0 1], channel_to_population)
-title('LR test')
-
-%% Plot result for anatomical classification
-% 
-% clims = [0 0.6];
-% DK = time_series.DK;
-% DK = DK(:,8:10);
-% plot_title = ['Transfer entropy ', fn{ncat}];  
-% subplot(1,2,1)
-% plot_pcgc(TE, clims, DK)
-% title(plot_title)
-% subplot(1,2,2)
-% plot_pcgc(sig, [0 1], DK)
-% title('LR test')
+plot_pcgc(sig, [0 1], population')
+title('Stat test')
 
 %% Save figure
 
 % fig_dir = fullfile('~', 'projects', 'CIFAR', 'figures');
-% fname = ['Transfer_entropy_', fn{ncat}, '.png'];
+% fname = ['SS_transfer_entropy_', fn{ncat}, '.png'];
 % fpath = fullfile(fig_dir, fname);
 % saveas(gcf,fpath)
 

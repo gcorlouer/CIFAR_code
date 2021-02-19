@@ -19,13 +19,13 @@ if ~exist('LR', 'var') LR = true; end % If false F test
 
 if ~exist('tmin', 'var') tmin = 0.3; end
 if ~exist('tmax', 'var') tmax = 1; end
-if ~exist('t_0', 'var') t_0 = -0.50; end
+if ~exist('t_0', 'var') t_0 = -0.050; end
 
 %% Loading data
 
 datadir = fullfile('~', 'projects', 'CIFAR', 'CIFAR_data', 'iEEG_10', ... 
     'subjects', subject, 'EEGLAB_datasets', 'preproc');
-fname = [subject, '_visual_HFB_all_categories.mat'];
+fname = [subject, '_visual_LFP_all_categories.mat'];
 fpath = fullfile(datadir, fname);
 
 time_series = load(fpath);
@@ -35,11 +35,9 @@ fn = fieldnames(time_series);
 
 X = time_series.(fn{ncat});
 
-channel_to_population = time_series.channel_to_population;
-
 %% Crop signal
 
-% [X, time] = crop_signal(X, time, 'tmin', tmin, 'tmax', tmax, 'fs', fs, 't_0', t_0);
+[X, time] = crop_signal(X, time, 'tmin', tmin, 'tmax', tmax, 'fs', fs, 't_0', t_0);
 
 %% Detrending
 
@@ -55,35 +53,18 @@ TE = GC_to_TE(F, fs);
 
 %% Plot result for functional classification
 
+DK = time_series.DK;
+DK = DK(:,8:23);
 TE_max = max(TE, [],'all');
 clims = [0 TE_max];
 plot_title = ['Transfer entropy ', fn{ncat}];  
 subplot(1,2,1)
-plot_pcgc(TE, clims, channel_to_population)
+plot_pcgc(TE, clims, population)
 title(plot_title)
 subplot(1,2,2)
-plot_pcgc(sig, [0 1], channel_to_population)
+plot_pcgc(sig, [0 1], population)
 title('LR test')
 
-%% Plot result for anatomical classification
-% 
-% clims = [0 0.6];
-% DK = time_series.DK;
-% DK = DK(:,8:10);
-% plot_title = ['Transfer entropy ', fn{ncat}];  
-% subplot(1,2,1)
-% plot_pcgc(TE, clims, DK)
-% title(plot_title)
-% subplot(1,2,2)
-% plot_pcgc(sig, [0 1], DK)
-% title('LR test')
-
-%% Save figure
-
-% fig_dir = fullfile('~', 'projects', 'CIFAR', 'figures');
-% fname = ['Transfer_entropy_', fn{ncat}, '.png'];
-% fpath = fullfile(fig_dir, fname);
-% saveas(gcf,fpath)
 
 %% SS model analysis
 % 

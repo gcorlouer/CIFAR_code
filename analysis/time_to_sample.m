@@ -16,5 +16,5 @@ t = p.Results.t;
 t_0 = p.Results.t_0;
 fs = p.Results.fs;
 
-sample = floor(fs*(t-t_0));
+sample = floor(fs*(t-t_0))+1;
 end

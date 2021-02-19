@@ -1,12 +1,10 @@
 % Input data
 if ~exist('subject', 'var') subject = 'DiAs'; end
-if ~exist('fs','var') fs = 100; end 
-if ~exist('ncat','var') ncat = 11; end % 11: rest, 12: face, 13: place
 
 % Modeling
 if ~exist('multitrial', 'var') multitrial = true; end 
 if ~exist('mosel', 'var') mosel = 2; end % Select model order 1: AIC, 2: BIC, 3: HQC, 4: LRT
-if ~exist('momax', 'var') momax = 10; end % Max model order 
+if ~exist('momax', 'var') momax = 15; end % Max model order 
 if ~exist('moregmode', 'var') moregmode = 'OLS'; end % OLS or LWR
 
 % Statistics
@@ -15,46 +13,51 @@ if ~exist('mhtc', 'var') mhtc = 'FDRD'; end % multiple hypothesis testing correc
 if ~exist('nperms', 'var') nperms = 110; end % 
 if ~exist('LR', 'var') LR = true; end % If false F test
 
-% Sliding window parameters
-tmin = 0.075;
-tmax = 0.350;
-start = 0.100;
-stop = 0.400;
-window_size = 0.050;
-tau = 0.010;
-
 %% Loading data
 
 datadir = fullfile('~', 'projects', 'CIFAR', 'CIFAR_data', 'iEEG_10', ... 
     'subjects', subject, 'EEGLAB_datasets', 'preproc');
-fname = [subject, '_visual_HFB_all_categories.mat'];
+fname = [subject, '_slided_category_visual_HFB.mat'];
 fpath = fullfile(datadir, fname);
-
 time_series = load(fpath);
 
-fn = fieldnames(time_series);
+X = double(time_series.data);
+fs = double(time_series.sfreq);
 
-X = time_series.(fn{ncat});
-time = time_series.time;
+[nchan, nobs, ntrial, nseg, ncat] = size(X);
+%% Run GC analysis on sliding window for each category
 
-channel_to_population = time_series.channel_to_population;
+F = zeros(nchan, nchan, nseg, ncat);
+TE = zeros(nchan, nchan, nseg, ncat);
 
-%% Crop signal
+for c = 1:ncat
+    for w = 1:nseg
+        [F(:,:,w,c), VARmodel, VARmoest, sig(:,:, w,c)] = pwcgc_from_VARmodel(X(:,:,:,w,c), 'momax', momax, 'mosel', mosel, ... 
+            'multitrial', multitrial, 'moregmode', moregmode, 'LR', LR);
 
-[X, time] = crop_signal(X, time, 'tmin', tmin, 'tmax', tmax, 'fs', fs);
+        TE(:,:,w,c) = GC_to_TE(F(:,:,w,c), fs);
+    end
+end
+
+%% Plot for fast check
+cat = 2;
+seg = 1;
+channels = 1:nchan;
+
+TE_max = max(TE(:,:,seg,cat), [],'all');
+clims = [0 TE_max];
+plot_title = ['Transfer entropy cat', num2str(cat)];  
+subplot(1,2,1)
+plot_pcgc(squeeze(TE(:,:,seg,cat)), clims, channels)
+title(plot_title)
+subplot(1,2,2)
+plot_pcgc(squeeze(sig(:,:,seg,cat)), [0 1], channels)
+title('LR test')
+
 %% Detrend
 
-X = detrend_HFB(X, 'deg_max', 2);
-[n, m, N] = size(X);
-
-%% Create sliding window
-
-sliding_ts = slide_window(X, 'start', start, 'stop', stop, 'window_size', ... 
-    window_size,'tau', tau);
-
-size(sliding_ts)
-
-%% Run GC analysis on sliding window
-
-
-
+% for i=1:ncat
+%     for j=1:nseg
+%         X(:,:,:,j,i) = detrend_HFB(X(:,:,:,j,i), 'deg_max', 2);
+%     end
+% end

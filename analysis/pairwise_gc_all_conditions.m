@@ -1,18 +1,20 @@
 %% Input data
 if ~exist('subject', 'var') subject = 'DiAs'; end
-
+tmin = 0.2;
+tmax = 1;
+window_size = tmax-tmin;
 %%
 
 ncat = 11;
-pgc_functional_population
+pairwise_gc_one_condition
 TE_rest = TE;
 sig_rest = sig;
 ncat = 12;
-pgc_functional_population
+pairwise_gc_one_condition
 TE_face = TE;
 sig_face = sig;
 ncat = 13;
-pgc_functional_population
+pairwise_gc_one_condition
 TE_place = TE;
 sig_place = sig;
 
@@ -56,3 +58,10 @@ plot_title = ['Transfer entropy ', fn{13}];
 subplot(2,2,3)
 plot_pcgc(sig_place, clims, channel_to_population)
 title(plot_title)
+
+fig_name = ['pairwise_gc_', subject, '_', num2str(tmin), 's_to_', ... 
+    num2str(tmax), 's_', num2str(fs), 'Hz.jpg'];
+fig_dir = fullfile('~','projects','CIFAR','figures');
+fig_path = fullfile(fig_dir, fig_name);
+set(gcf, 'Position', get(0, 'Screensize'));
+saveas(gcf, fig_path);

@@ -1,5 +1,5 @@
 %% Simulate MVAR model
-function [tsdata,var_coef, corr_res, connectivity_matrix] = var_sim(tsdim, varargin)
+function [tsdata,var_coef, corr_res, connectivity_matrix] = var_simulation(tsdim, varargin)
 %% Argunents
 % connect_matrix: matrix of G causal connections
 % specrad: spectral radius

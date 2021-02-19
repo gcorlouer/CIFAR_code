@@ -1,6 +1,6 @@
 % Input data
 if ~exist('subject', 'var') subject = 'DiAs'; end
-if ~exist('fs','var') fs = 100; end 
+if ~exist('fs','var') fs = 250; end 
 if ~exist('ncat','var') ncat = 11; end % 10: rest, 11: face, 12: place
 
 % Modeling
@@ -15,6 +15,13 @@ if ~exist('mhtc', 'var') mhtc = 'FDRD'; end % multiple hypothesis testing correc
 if ~exist('nperms', 'var') nperms = 110; end % 
 if ~exist('LR', 'var') LR = true; end % 
 
+% Temporal window in seconds
+
+if ~exist('tmin', 'var') tmin = 0.3; end
+if ~exist('tmax', 'var') tmax = 1; end
+if ~exist('t_0', 'var') t_0 = -0.050; end
+
+
 %%
 
 datadir = fullfile('~', 'projects', 'CIFAR', 'CIFAR_data', 'iEEG_10', ... 
@@ -27,10 +34,16 @@ time_series = load(fpath);
 fn = fieldnames(time_series);
 
 X = time_series.(fn{ncat});
+time = time_series.time;
 
 channel_to_population = time_series.channel_to_population;
 populations = time_series.populations;
 
+%% Crop signal
+
+[X, time] = crop_signal(X, time, 'tmin', tmin, 'tmax', tmax, 'fs', fs, 't_0', t_0);
+
+%% Detrend
 X = detrend_HFB(X, 'deg_max', 2);
 [n, m, N] = size(X);
 
@@ -42,13 +55,15 @@ X = detrend_HFB(X, 'deg_max', 2);
 TE = GC_to_TE(F, fs);
 
 %% Functional group TE
+DK_to_indices = time_series.DK_to_indices; 
+group = populations; % Or take fieldname populations
 
-fn_pop = fieldnames(populations);
+fn_pop = fieldnames(group);
 npop = size(fn_pop,1);
-clear fgroup_TE
+clear fgroup_TE % useful when looping over script
 for i = 1:npop
     for j=1:npop
-        fgroup_TE(i,j) = mean2(TE(populations.(fn_pop{i}),populations.(fn_pop{j})));
+        fgroup_TE(i,j) = mean2(TE(group.(fn_pop{i}),group.(fn_pop{j})));
     end
 end
 
