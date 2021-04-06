@@ -21,9 +21,9 @@ if isempty(subjid); subjid = 'fsaverage'; end
 if ~isfield(S_brain,'layout'); S_brain.layout = 'full'; end
 if ~isfield(S_brain,'plotsurf'); S_brain.plotsurf = 'inflated'; end
 if ~isfield(S_brain,'surfacealpha'); S_brain.surfacealpha=1; end
-if ~isfield(S_brain,'meshdir'); S_brain.meshdir='/its/home/gc349/CIFAR_guillaume/CIFAR_data/iEEG_10/subjects/'; end
+if ~isfield(S_brain,'meshdir'); S_brain.meshdir='~/projects/CIFAR/CIFAR_data/iEEG_10/'; end
 
-meshDir=fullfile(S_brain.meshdir,subjid,'brain','default_freesrufer_surface');
+meshDir=fullfile(S_brain.meshdir,'default_freesrufer_surface');
 switch S_brain.plotsurf
     case 'inflated'
         load(fullfile(meshDir,'SUMAInflatedSrf.mat'))
@@ -51,7 +51,7 @@ if ismember(S_brain.plotsurf,{'flat', 'inflated'})
     
     
 else
-    load(fullfile(S_brain.meshdir,subjid,'brain','default_freesrufer_surface','SUMA_DKatlas.mat'));
+    load(fullfile(S_brain.meshdir,'default_freesrufer_surface','SUMA_DKatlas.mat'));
     %load(fullfile(S_brain.meshdir,'painted_surfaces','SUMA_blank.mat'));
     %load(fullfile(meshDir,'painted_surfaces','SUMA_DKatlas.mat'));
 end

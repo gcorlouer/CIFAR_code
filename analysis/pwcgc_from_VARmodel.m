@@ -1,7 +1,9 @@
-function [F, VARmodel, VARmoest, sig] = pwcgc_from_VARmodel(X, varargin)
+function [F, VAR, VARmoest, sig] = pwcgc_from_VARmodel(X, varargin)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Estimate VAR model based pairwise conditional granger causality from 
+% time series X
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-defaultMultitrial = true;
-defaultFs = 500;
 defaultMosel = 1;
 defaultMomax = 15;
 defaultMoregmode = 'OLS';
@@ -13,9 +15,7 @@ defaultLR = true;
 p = inputParser;
 
 addRequired(p, 'X')
-addParameter(p, 'multitrial', defaultMultitrial)
-addParameter(p, 'fs', defaultFs, @isscalar);
-addParameter(p, 'mosel', defaultMosel, @isscalar); % selected model order: 1 - AIC, 2 - BIC, 3 - HQC, 4 - LRT
+addParameter(p, 'mosel', defaultMosel, @isscalar); 
 addParameter(p, 'momax', defaultMomax, @isscalar);
 addParameter(p, 'moregmode', defaultMoregmode);  
 addParameter(p, 'plotm', defaultPlotm, @isscalar);
@@ -26,7 +26,6 @@ addParameter(p, 'LR', defaultLR)
 
 parse(p, X, varargin{:});
 
-multitrial = p.Results.multitrial;
 mosel = p.Results.mosel;
 momax = p.Results.momax;
 moregmode = p.Results.moregmode;
@@ -35,20 +34,18 @@ alpha = p.Results.alpha;
 mhtc =  p.Results.mhtc;
 LR = p.Results.LR;
 
-%% Modeling whole epoched data
-[n, m, N] = size(X);
+%% VAR modeling
 
-% VAR model
+[VAR, VARmoest] = VARmodeling(X, 'momax', momax, 'mosel', mosel, ... 
+                             'moregmode', moregmode, 'plotm', plotm );
 
-[VARmodel, VARmoest] = VARmodeling(X, 'momax', momax, 'mosel', mosel, ... 
-    'multitrial', multitrial, 'moregmode', moregmode, 'plotm', plotm );
+%% Pairwise conditional GC
 
-%% GC effect size
-
-V = VARmodel.V;
-A = VARmodel.A;
+V = VAR.V;
+A = VAR.A;
 
 [F,pval] = var_to_pwcgc(A,V,X,moregmode);
+% Put diagonal terms which are NaN by default to 0
 F(isnan(F))=0;
 
 if LR == true

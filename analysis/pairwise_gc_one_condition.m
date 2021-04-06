@@ -25,7 +25,7 @@ if ~exist('t_0', 'var') t_0 = -0.50; end
 
 datadir = fullfile('~', 'projects', 'CIFAR', 'CIFAR_data', 'iEEG_10', ... 
     'subjects', subject, 'EEGLAB_datasets', 'preproc');
-fname = [subject, '_visual_HFB_all_categories.mat'];
+fname = [subject, '_visual_HFB_category_specific.mat'];
 fpath = fullfile(datadir, fname);
 
 time_series = load(fpath);
@@ -53,7 +53,7 @@ X = detrend_HFB(X, 'deg_max', 2);
 
 TE = GC_to_TE(F, fs);
 
-%% Plot result for functional classification
+%% Plot result for functional classificationn
 
 TE_max = max(TE, [],'all');
 clims = [0 TE_max];
