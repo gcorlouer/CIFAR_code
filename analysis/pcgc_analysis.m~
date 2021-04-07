@@ -32,12 +32,10 @@ X = time_series.data;
 [nchan, nobs, ntrial, ncat] = size(X);
 
 %% MI estimation
-MI = zeros(nchan, nchan, ncat);
-sig_MI = zeros(nchan, nchan, ncat);
 
 for i=1:ncat
-    [MI(:,:,i), sig_MI(:,:,i)] = ts_to_MI(X(:,:,:,i), 'q', q, 'mhtc', mhtc, 'alpha', alpha);
-end
+    [MI(:,:,i), sig_MI(:,:,i)] = ts_to_MI(X(:,:,i), 'q', q, 'mhtc', mhtc, 'alpha', alpha);
+
 %% GC estimation
 
 F = zeros(nchan, nchan, ncat);

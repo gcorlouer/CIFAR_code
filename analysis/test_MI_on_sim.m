@@ -14,10 +14,10 @@ mhtc = 'FDRD';
 %% Estimate mutual information
 
 V = tsdata_to_autocov(X,q);
-[I,stats] = cov_to_pwcmi(V(:,:),m,N);
+[I,stats] = cov_to_pwcmi(V,m,N);
 pval = stats.LR.pval;
 sig = significance(pval,alpha,mhtc);
-R = partialcorr(transpose(X));
+R = partialcorr(transpose(X)); % compare with partial corrleation (should be similar)
 %%
 category = 1:n;
 Imax = max(I,[], 'all');
