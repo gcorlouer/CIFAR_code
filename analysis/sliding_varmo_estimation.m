@@ -1,5 +1,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% This script estimate VAR model order from input time series
+% This script estimate VAR model order from input time series along sliding
+% window
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Input data parameters
@@ -16,18 +17,19 @@ verb = 0;
 
 datadir = fullfile('~', 'projects', 'CIFAR', 'CIFAR_data', 'iEEG_10', ... 
     'subjects', subject, 'EEGLAB_datasets', 'preproc');
-fname = [subject, '_ts_visual_test.mat'];
+fname = [subject, '_continuous_sliding_ts.mat'];
 fpath = fullfile(datadir, fname);
 
 time_series = load(fpath);
 
 X = time_series.data;
-[nchan, nobs, ntrial, ncat] = size(X);
+[nchan, nobs, nwin, ncat] = size(X);
 
-%% Estimate model order parameters
+%% Estimate model order parameters from sliding window
 
-for i=1:ncat
-    [moaic(i),mobic(i),mohqc(i),molrt(i)] = tsdata_to_varmo(X(:,:,:,i), ... 
-        momax,regmode,alpha,pacf,plotm,verb);
+for i=1:nwin
+    for j=1:ncat
+        [moaic(i,j),mobic(i,j),mohqc(i,j),molrt(i,j)] = tsdata_to_varmo(X(:,:,i,j),...
+            momax,regmode,alpha,pacf,plotm,verb);
+    end
 end
-

@@ -3,27 +3,14 @@
 % subject. Estimates mutual information and then pairwise conditional 
 % Granger causality (GC).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Initialise parameters
 
-% Input data
-if ~exist('subject', 'var') subject = 'DiAs'; end
-
-% Mutual information
-if ~exist('q', 'var')    q = 0; end % Covariance lag
-
-% Modeling
-if ~exist('moregmode', 'var') regmode = 'OLS'; end % OLS or LWR
-if ~exist('morder', 'var')    morder = 5; end % Model order
-
-% Statistics
-if ~exist('alpha', 'var') alpha = 0.05; end
-if ~exist('mhtc', 'var') mhtc = 'FDRD'; end % multiple testing correction
-if ~exist('LR', 'var') LR = true; end % If false F test
-
+input_parameters;
 %% Load data
 
 datadir = fullfile('~', 'projects', 'CIFAR', 'CIFAR_data', 'iEEG_10', ... 
     'subjects', subject, 'EEGLAB_datasets', 'preproc');
-fname = [subject, '_ts_visual.mat'];
+fname = [subject, '_ts_visual_test.mat'];
 fpath = fullfile(datadir, fname);
 
 time_series = load(fpath);

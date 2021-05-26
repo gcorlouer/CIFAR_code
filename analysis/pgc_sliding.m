@@ -5,7 +5,8 @@ if ~exist('subject', 'var') subject = 'DiAs'; end
 if ~exist('multitrial', 'var') multitrial = true; end 
 if ~exist('mosel', 'var') mosel = 4; end % Select model order 1: AIC, 2: BIC, 3: HQC, 4: LRT
 if ~exist('momax', 'var') momax = 20; end % Max model order 
-if ~exist('moregmode', 'var') moregmode = 'OLS'; end % OLS or LWR
+if ~exist('regmode', 'var') regmode = 'OLS'; end % OLS or LWR
+if ~exist('morder', 'var')    morder = 5; end % Model order
 
 % Statistics
 if ~exist('alpha', 'var') alpha = 0.05; end
@@ -41,8 +42,8 @@ sig = zeros(nchan, nchan, nwin, ncat);
 
 for i=1:ncat
     for j=1:nwin
-        [F(:,:,j,i), VARmodel, VARmoest, sig(:,:,j,i)] = pwcgc_from_VARmodel(X(:,:,:,j,i), 'momax', momax, 'mosel', mosel, ... 
-            'multitrial', multitrial, 'moregmode', moregmode, 'LR', LR);
+        [F(:,:,j,i), sig(:,:,j,i)] =ts_to_var_pcgc(X(:,:,j,i),'morder', morder,...
+        'regmode', regmode,'alpha', alpha,'mhtc', mhtc, 'LR', LR);
     end
 end
 
