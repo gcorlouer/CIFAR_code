@@ -106,4 +106,7 @@ set(0,'DefaultTextFontSize',18);
 
 set(groot,'defaultAxesColorOrder',[0 0 1; 0 0.5 0; 1 0 0; 0 0.75 0.75; 0.75 0 0.75; 0.75 0.75 0; 0.25 0.25 0.25]);
 
+% Dock figures
+set(0,'DefaultFigureWindowStyle','docked')
+
 fprintf('[CIFAR startup] Initialised (you may re-run `startup'' at any time)\n');
