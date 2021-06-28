@@ -5,7 +5,7 @@
 % coefficient. But with same coefficients, we have same global model order
 % as per trial model order. Interestingly if per-trials residuals and
 % VAR coefficients are different, global VAR model is still stable but with
-% much higher model orderl. 
+% much higher model order. 
 %% Parameters
 rng(1);
 ntrials = 56;

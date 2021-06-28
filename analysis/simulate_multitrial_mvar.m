@@ -6,10 +6,10 @@
 %% Parameters
 rng(1);
 ntrials = 56;
-tsdim = 4;
+tsdim = 14;
 morder = 5;
 rho = 0.90;
-nobs = 1000;
+nobs = 120;
 regmode = 'OLS';
 momax = 10;
 alpha = 0.05;

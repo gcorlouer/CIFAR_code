@@ -9,7 +9,7 @@ if ~exist('regmode', 'var') regmode = 'OLS'; end
 
 alpha = 0.05;
 pacf = true;
-plotm = 1;
+plotm = 0;
 verb = 0;
 
 %% Load data

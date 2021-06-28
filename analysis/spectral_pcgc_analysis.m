@@ -3,30 +3,24 @@
 % subject. 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Input data
-if ~exist('subject', 'var') subject = 'DiAs'; end
-
-% Modeling
-if ~exist('moregmode', 'var') regmode = 'OLS'; end % OLS or LWR
-if ~exist('morder', 'var')    morder = 5; end % Model order
-
-% Spectral parameters
-
+input_parameters;
 fres = 1024;
-
 
 %% Load data
 
-datadir = fullfile('~', 'projects', 'CIFAR', 'CIFAR_data', 'iEEG_10', ... 
-    'subjects', subject, 'EEGLAB_datasets', 'preproc');
-fname = [subject, '_ts_visual.mat'];
+datadir = fullfile('~', 'projects', 'CIFAR', 'CIFAR_data', 'results');
+fname = 'condition_ts_visual.mat';
 fpath = fullfile(datadir, fname);
 
 time_series = load(fpath);
 
 X = time_series.data;
-fs = time_series.sfreq;
 [nchan, nobs, ntrial, ncat] = size(X);
+sub_id = time_series.sub_id;
+
+fname = [sub_id fname];
+fpath = fullfile(datadir, fname);
+save(fpath, 'time_series');
 
 %%
 
